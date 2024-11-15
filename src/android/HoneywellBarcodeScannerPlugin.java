@@ -1,6 +1,8 @@
 package za.co.palota.honeywell;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.media.AudioManager;
 
 import com.honeywell.aidc.AidcManager;
 import com.honeywell.aidc.BarcodeFailureEvent;
@@ -142,6 +144,7 @@ public boolean execute(String action, final JSONArray args, final CallbackContex
    @Override
 public void onBarcodeEvent(final BarcodeReadEvent event) {
     if (isScanBlocked) {
+        playBlockedScanSound();
         return; // Ignora l'evento
     }
 
@@ -173,4 +176,15 @@ public void onBarcodeEvent(final BarcodeReadEvent event) {
             this.callbackContext.sendPluginResult(result);
         }
     }
+
+    private void playBlockedScanSound() {
+    Context context = this.cordova.getActivity().getApplicationContext();
+    MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.blocked_scan); // Usa il file audio
+    if (mediaPlayer != null) {
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setOnCompletionListener(mp -> mp.release()); // Rilascia il MediaPlayer dopo la riproduzione
+        mediaPlayer.start();
+    }
+}
+
 }
