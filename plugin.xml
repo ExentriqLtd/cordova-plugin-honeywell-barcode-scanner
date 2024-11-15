@@ -23,6 +23,6 @@
         <framework src="src/android/plugin.gradle" custom="true" type="gradleReference" />
         <resource-file src="src/android/libs/DataCollection.aar" target="libs/DataCollection.aar" />
         <source-file src="src/android/HoneywellBarcodeScannerPlugin.java" target-dir="src/za/co/palota/honeywell" />
-        <resource-file src="src/android/res/raw/blocked_scan.mp3" target="app/src/main/res/raw/blocked_scan.mp3" />
+        <resource-file src="src/android/res/raw/blocked_scan.mp3" target="res/raw/blocked_scan.mp3" />
     </platform>
 </plugin>
