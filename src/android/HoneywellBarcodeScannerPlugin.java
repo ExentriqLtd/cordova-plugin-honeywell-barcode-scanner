@@ -26,6 +26,7 @@ public class HoneywellBarcodeScannerPlugin extends CordovaPlugin implements Barc
     private CallbackContext callbackContext;
     private static BarcodeReader barcodeReader;
     private AidcManager manager;
+    private boolean isScanBlocked = false;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -62,11 +63,6 @@ public class HoneywellBarcodeScannerPlugin extends CordovaPlugin implements Barc
                     properties.put(BarcodeReader.PROPERTY_CENTER_DECODE, true);
                     // Enable bad read response
                     properties.put(BarcodeReader.PROPERTY_NOTIFICATION_BAD_READ_ENABLED, true);
-                    
-                    // Enable Check digits for UPCA and EAN13 
-                    properties.put(BarcodeReader.PROPERTY_UPC_A_CHECK_DIGIT_TRANSMIT_ENABLED, true);
-                    properties.put(BarcodeReader.PROPERTY_EAN_13_CHECK_DIGIT_TRANSMIT_ENABLED, true);
-                    
                     // Apply the settings
                     barcodeReader.setProperties(properties);
 
@@ -80,17 +76,22 @@ public class HoneywellBarcodeScannerPlugin extends CordovaPlugin implements Barc
         });
     }
 
-    @Override
-    public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext)
-            throws JSONException {
-        if (action.equals("onBarcodeScanned")) {
-            this.callbackContext = callbackContext;
-            PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
-            result.setKeepCallback(true);
-            this.callbackContext.sendPluginResult(result);
-        }
+   @Override
+public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    if (action.equals("onBarcodeScanned")) {
+        this.callbackContext = callbackContext;
+        PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
+        result.setKeepCallback(true);
+        this.callbackContext.sendPluginResult(result);
+    } else if (action.equals("setScanBlocked")) {
+        boolean block = args.getBoolean(0); // Assume args contains a boolean
+        isScanBlocked = block;
+        callbackContext.success("Scan block set to: " + block);
         return true;
     }
+    return true;
+}
+
 
     @Override
     public void onResume(boolean multitasking) {
@@ -138,27 +139,32 @@ public class HoneywellBarcodeScannerPlugin extends CordovaPlugin implements Barc
         NotifyError("Barcode failed");
     }
 
-    @Override
-    public void onBarcodeEvent(final BarcodeReadEvent event) {
-        if (this.callbackContext != null) {
-            try {
-                JSONObject response = new JSONObject();
+   @Override
+public void onBarcodeEvent(final BarcodeReadEvent event) {
+    if (isScanBlocked) {
+        return; // Ignora l'evento
+    }
 
-                response.put("data", event.getBarcodeData());
-                response.put("code", event.getCodeId());
-                response.put("charset", event.getCharset());
-                response.put("aimId", event.getAimId());
-                response.put("timestamp", event.getTimestamp());
+    if (this.callbackContext != null) {
+        try {
+            JSONObject response = new JSONObject();
 
-                PluginResult result = new PluginResult(PluginResult.Status.OK, response);
-                result.setKeepCallback(true);
-                this.callbackContext.sendPluginResult(result);
+            response.put("data", event.getBarcodeData());
+            response.put("code", event.getCodeId());
+            response.put("charset", event.getCharset());
+            response.put("aimId", event.getAimId());
+            response.put("timestamp", event.getTimestamp());
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            PluginResult result = new PluginResult(PluginResult.Status.OK, response);
+            result.setKeepCallback(true);
+            this.callbackContext.sendPluginResult(result);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
+}
+
 
     private void NotifyError(String error) {
         if (this.callbackContext != null) {
