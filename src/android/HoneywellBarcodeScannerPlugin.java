@@ -179,7 +179,7 @@ public void onBarcodeEvent(final BarcodeReadEvent event) {
 
     private void playBlockedScanSound() {
     Context context = this.cordova.getActivity().getApplicationContext();
-    MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.blocked_scan); // Usa il file audio
+    MediaPlayer mediaPlayer = MediaPlayer.create(context, context.getResources().getIdentifier("blocked_scan", "raw", context.getPackageName()));
     if (mediaPlayer != null) {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setOnCompletionListener(mp -> mp.release()); // Rilascia il MediaPlayer dopo la riproduzione
