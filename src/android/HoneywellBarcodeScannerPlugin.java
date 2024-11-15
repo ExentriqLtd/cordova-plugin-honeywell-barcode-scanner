@@ -177,14 +177,24 @@ public void onBarcodeEvent(final BarcodeReadEvent event) {
         }
     }
 
-    private void playBlockedScanSound() {
+   private void playBlockedScanSound() {
     Context context = this.cordova.getActivity().getApplicationContext();
+
+    // Crea il MediaPlayer per il suono specificato
     MediaPlayer mediaPlayer = MediaPlayer.create(context, context.getResources().getIdentifier("blocked_scan", "raw", context.getPackageName()));
     if (mediaPlayer != null) {
+        // Ottieni l'AudioManager per controllare il volume
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+        // Imposta il volume al massimo
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
+
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setOnCompletionListener(mp -> mp.release()); // Rilascia il MediaPlayer dopo la riproduzione
         mediaPlayer.start();
     }
 }
+
 
 }
