@@ -86,9 +86,11 @@ public boolean execute(String action, final JSONArray args, final CallbackContex
         result.setKeepCallback(true);
         this.callbackContext.sendPluginResult(result);
     } else if (action.equals("setScanBlocked")) {
-        playBlockedScanSound();
         boolean block = args.getBoolean(0); // Assume args contains a boolean
         isScanBlocked = block;
+          if (block) {
+            playBlockedScanSound(); // Riproduci il suono solo se block è true
+        }
         callbackContext.success("Scan block set to: " + block);
         return true;
     }
