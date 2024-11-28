@@ -64,7 +64,8 @@ public class HoneywellBarcodeScannerPlugin extends CordovaPlugin implements Barc
                     // Turn on center decoding
                     properties.put(BarcodeReader.PROPERTY_CENTER_DECODE, true);
                     // Enable bad read response
-                    properties.put(BarcodeReader.PROPERTY_NOTIFICATION_BAD_READ_ENABLED, true);
+                    properties.put(BarcodeReader.PROPERTY_NOTIFICATION_BAD_READ_ENABLED, false);
+                    properties.put(BarcodeReader.PROPERTY_NOTIFICATION_GOOD_READ_ENABLED, false);
                     // Apply the settings
                     barcodeReader.setProperties(properties);
 
