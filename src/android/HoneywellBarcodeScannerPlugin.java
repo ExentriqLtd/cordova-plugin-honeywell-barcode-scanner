@@ -94,6 +94,11 @@ public boolean execute(String action, final JSONArray args, final CallbackContex
         }
         callbackContext.success("Scan block set to: " + block);
         return true;
+    } else if (action.equals("setGoodReadNotification")) {
+        boolean enabled = args.getBoolean(0); // Assume il primo argomento è un boolean
+        setGoodReadNotificationEnabled(enabled);
+        callbackContext.success("Good read notification set to: " + enabled);
+        return true;
     }
     return true;
 }
@@ -197,6 +202,17 @@ public void onBarcodeEvent(final BarcodeReadEvent event) {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setOnCompletionListener(mp -> mp.release()); // Rilascia il MediaPlayer dopo la riproduzione
         mediaPlayer.start();
+    }
+}
+
+    private void setGoodReadNotificationEnabled(boolean enabled) {
+        try {
+            Map<String, Object> properties = new HashMap<>();
+            properties.put(BarcodeReader.PROPERTY_NOTIFICATION_GOOD_READ_ENABLED, enabled);
+            barcodeReader.setProperties(properties);
+        } catch (Exception e) {
+            e.printStackTrace();
+            NotifyError("Failed to update good read notification: " + e.getMessage());
     }
 }
 
