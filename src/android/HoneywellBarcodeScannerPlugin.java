@@ -66,14 +66,8 @@ public class HoneywellBarcodeScannerPlugin extends CordovaPlugin implements Barc
                     // Enable bad read response
                     properties.put(BarcodeReader.PROPERTY_NOTIFICATION_BAD_READ_ENABLED, false);
                     properties.put(BarcodeReader.PROPERTY_NOTIFICATION_GOOD_READ_ENABLED, false);
-
-                    properties.put(BarcodeReader.PROPERTY_CODE_39_CHECK_DIGIT_ENABLED, true); // Abilita il controllo del check digit per Code 39
-                    properties.put(BarcodeReader.PROPERTY_UPC_A_CHECK_DIGIT_ENABLED, true);  // Abilita il controllo del check digit per UPC-A
-                    properties.put(BarcodeReader.PROPERTY_EAN_13_CHECK_DIGIT_ENABLED, true); // Abilita il controllo del check digit per EAN-13
-
-// Altre proprietà di configurazione potrebbero includere
-// Abilita il calcolo automatico del check digit
-                    properties.put(BarcodeReader.PROPERTY_CODE_39_CHECK_DIGIT_TRANSMIT, true);
+                    properties.put(BarcodeReader.PROPERTY_UPC_A_CHECK_DIGIT_TRANSMIT_ENABLED, true);
+                    properties.put(BarcodeReader.PROPERTY_EAN_13_CHECK_DIGIT_TRANSMIT_ENABLED, true);
                     // Apply the settings
                     barcodeReader.setProperties(properties);
 
